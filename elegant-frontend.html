@@ -580,7 +580,7 @@
             <div class="brand">
                 <div class="logo">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2L2 7v10c0 5.52 4.48 10 10s10-4.48 10-10S17.52 2 12 2zm0 18c-2.76 0-5-2.24-5-5s2.24-5 5-5 5-5 5-5-2.24-5-5zm-3.5 0c-.83 0-1.5-.67-1.5-1.5S11.17 8 10.5 8s1.5.67 1.5 1.5.67 1.5 1.5zm0 9c0 2.76 2.24 5 5s-2.24 5-5-5-2.24-5-5-5-2.24-5-5z"/>
+                        <path d="M12 2L2 7v10c0 5.52 4.48 10 10s10-4.48 10-10S17.52 2 12 2zm0 18c-2.76 0-5-2.24-5-5s2.24-5 5-5 5-5 5-5-2.24-5-5-5-2.24-5-5-5-2.24-5-5-5-2.24-5-5z"/>
                     </svg>
                 </div>
                 <span>CampusWell Analytics</span>
@@ -590,6 +590,7 @@
                 <span class="status-text" id="statusText">Loading...</span>
             </div>
             <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+            <button class="theme-toggle" onclick="logout()" style="margin-left: 8px;">🚪</button>
         </nav>
     </header>
 
@@ -899,9 +900,38 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
+            checkAuthentication();
             checkModelStatus();
             loadTheme();
         });
+
+        // Check authentication
+        function checkAuthentication() {
+            const userEmail = localStorage.getItem('campuswell-email');
+            const userData = localStorage.getItem('campuswell-user');
+            
+            if (!userEmail && !userData) {
+                // Redirect to login if not authenticated
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Display user info
+            if (userEmail) {
+                const brandElement = document.querySelector('.brand');
+                const userInfo = document.createElement('div');
+                userInfo.style.cssText = 'font-size: 0.9rem; color: var(--text-light); margin-left: 1rem;';
+                userInfo.textContent = userEmail;
+                brandElement.appendChild(userInfo);
+            }
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('campuswell-email');
+            localStorage.removeItem('campuswell-user');
+            window.location.href = 'login.html';
+        }
 
         // Step navigation
         function nextStep() {
