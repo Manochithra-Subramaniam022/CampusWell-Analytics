@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Report - CampusWell Analytics</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --background: #ffffff;
+            --surface: #f8fafc;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
+
+        [data-theme="dark"] {
+            --background: #0f172a;
+            --surface: #1e293b;
+            --text: #f8fafc;
+            --text-light: #cbd5e1;
+            --border: #334155;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .logo {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .theme-toggle, .logout-btn, .home-btn, .assessment-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: var(--text);
+        }
+
+        .theme-toggle:hover, .logout-btn:hover, .home-btn:hover, .assessment-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Report Section */
+        .report-section {
+            padding: 2rem 0;
+        }
+
+        .report-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .report-header h1 {
+            font-size: 2.5rem;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        .report-header p {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        /* Stress Level Card */
+        .stress-level-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .stress-level {
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+        }
+
+        .stress-level.low {
+            background: linear-gradient(135deg, #d1fae5, #10b981);
+            color: white;
+        }
+
+        .stress-level.medium {
+            background: linear-gradient(135deg, #fef3c7, #f59e0b);
+            color: white;
+        }
+
+        .stress-level.high {
+            background: linear-gradient(135deg, #fef2f2, #ef4444);
+            color: white;
+        }
+
+        .stress-level .level {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stress-level .score {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .metric-card .label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-card .value {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        /* Factors Section */
+        .factors-section {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        .factors-section h2 {
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+
+        .factor-list {
+            list-style: none;
+        }
+
+        .factor-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .factor-item:last-child {
+            border-bottom: none;
+        }
+
+        .factor-name {
+            font-weight: 500;
+        }
+
+        .factor-impact {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .impact-bar {
+            width: 100px;
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .impact-fill {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .impact-value {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            min-width: 45px;
+            text-align: right;
+        }
+
+        /* Recommendations Section */
+        .recommendations-section {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        .recommendations-section h2 {
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+
+        .recommendation-list {
+            list-style: none;
+        }
+
+        .recommendation-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .recommendation-item:last-child {
+            border-bottom: none;
+        }
+
+        .recommendation-icon {
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+
+        .recommendation-content h4 {
+            margin-bottom: 0.25rem;
+            color: var(--text);
+        }
+
+        .recommendation-content p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        /* Actions */
+        .actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 12px 32px;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--shadow);
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Loading */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* No Data */
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .no-data h2 {
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            .nav-actions {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="brand">
+                <div class="logo">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2L2 7v10c0 5.52 4.48 10 10s10-4.48 10-10S17.52 2 12 2zm0 18c-2.76 0-5-2.24-5-5s2.24-5 5-5 5-5 5-5-2.24-5-5-5-2.24-5-5-5-2.24-5-5-5-2.24-5-5z"/>
+                    </svg>
+                </div>
+                <span>CampusWell Analytics</span>
+            </div>
+            <div class="nav-actions">
+                <div class="user-info" id="userInfo">
+                    <span id="userEmail">Loading...</span>
+                </div>
+                <a href="home.html" class="home-btn">🏠</a>
+                <a href="assessment.html" class="assessment-btn">📋</a>
+                <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+                <button class="logout-btn" onclick="logout()">🚪</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Report Section -->
+    <section class="report-section">
+        <div class="container">
+            <div class="report-header">
+                <h1>Your Stress Analysis Report</h1>
+                <p>Comprehensive insights into your wellbeing and personalized recommendations</p>
+            </div>
+
+            <!-- Loading -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Loading your report...</p>
+            </div>
+
+            <!-- No Data -->
+            <div class="no-data hidden" id="noData">
+                <h2>No Assessment Data</h2>
+                <p>You haven't completed any stress assessments yet. Start your first assessment to see your personalized report.</p>
+                <a href="assessment.html" class="btn-primary" style="margin-top: 1rem;">Start Assessment</a>
+            </div>
+
+            <!-- Report Content -->
+            <div id="reportContent">
+                <!-- Stress Level Card -->
+                <div class="stress-level-card">
+                    <div class="stress-level" id="stressLevel">
+                        <div class="level" id="stressLevelText">Loading...</div>
+                        <div class="score" id="stressScore">0/100</div>
+                    </div>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="label">Confidence</div>
+                            <div class="value" id="confidence">0%</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="label">Risk Factors</div>
+                            <div class="value" id="riskFactors">0</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="label">Assessment Date</div>
+                            <div class="value" id="assessmentDate">--</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Factors Section -->
+                <div class="factors-section">
+                    <h2>Main Stress Factors</h2>
+                    <ul class="factor-list" id="factorList">
+                        <!-- Dynamic content -->
+                    </ul>
+                </div>
+
+                <!-- Recommendations Section -->
+                <div class="recommendations-section">
+                    <h2>Personalized Recommendations</h2>
+                    <ul class="recommendation-list" id="recommendationList">
+                        <!-- Dynamic content -->
+                    </ul>
+                </div>
+
+                <!-- Actions -->
+                <div class="actions">
+                    <a href="assessment.html" class="btn-primary">New Assessment</a>
+                    <button class="btn-secondary" onclick="downloadReport()">Download Report</button>
+                    <a href="home.html" class="btn-secondary">Back to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('campuswell-theme', newTheme);
+            
+            const themeBtn = document.querySelector('.theme-toggle');
+            themeBtn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('campuswell-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.querySelector('.theme-toggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        function logout() {
+            localStorage.removeItem('campuswell-email');
+            localStorage.removeItem('campuswell-user');
+            window.location.href = 'login.html';
+        }
+
+        function loadUserData() {
+            const userEmail = localStorage.getItem('campuswell-email');
+            const userData = localStorage.getItem('campuswell-user');
+            
+            if (!userEmail && !userData) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            if (userEmail) {
+                document.getElementById('userEmail').textContent = userEmail;
+            } else if (userData) {
+                const user = JSON.parse(userData);
+                document.getElementById('userEmail').textContent = user.email;
+            }
+        }
+
+        function loadReportData() {
+            const assessments = JSON.parse(localStorage.getItem('campuswell-assessments') || '[]');
+            
+            if (assessments.length === 0) {
+                document.getElementById('loading').classList.remove('active');
+                document.getElementById('noData').classList.remove('hidden');
+                document.getElementById('reportContent').classList.add('hidden');
+                return;
+            }
+            
+            // Get the latest assessment
+            const latestAssessment = assessments[0];
+            displayReport(latestAssessment);
+            
+            document.getElementById('loading').classList.remove('active');
+            document.getElementById('noData').classList.add('hidden');
+            document.getElementById('reportContent').classList.remove('hidden');
+        }
+
+        function displayReport(assessment) {
+            const stressLevel = assessment.prediction;
+            const confidence = assessment.confidence;
+            const riskScore = assessment.risk_score;
+            
+            // Update stress level
+            const levelElement = document.getElementById('stressLevel');
+            levelElement.className = `stress-level ${stressLevel}`;
+            document.getElementById('stressLevelText').textContent = 
+                stressLevel === 'low' ? 'Low Stress' :
+                stressLevel === 'medium' ? 'Moderate Stress' : 'High Stress';
+            
+            document.getElementById('stressScore').textContent = Math.round(riskScore) + '/100';
+            
+            // Update metrics
+            document.getElementById('confidence').textContent = confidence.toFixed(0) + '%';
+            document.getElementById('riskFactors').textContent = Object.keys(assessment.feature_contributions || {}).length;
+            
+            // Format date
+            const date = new Date(assessment.date);
+            document.getElementById('assessmentDate').textContent = date.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric' 
+            });
+            
+            // Update factors
+            const factorList = document.getElementById('factorList');
+            factorList.innerHTML = '';
+            
+            const sortedFactors = Object.entries(assessment.feature_contributions || {})
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 5);
+            
+            sortedFactors.forEach(([factor, impact]) => {
+                const li = document.createElement('li');
+                li.className = 'factor-item';
+                li.innerHTML = `
+                    <span class="factor-name">${formatFactorName(factor)}</span>
+                    <div class="factor-impact">
+                        <div class="impact-bar">
+                            <div class="impact-fill" style="width: ${Math.min(impact, 100)}%"></div>
+                        </div>
+                        <span class="impact-value">${impact.toFixed(0)}%</span>
+                    </div>
+                `;
+                factorList.appendChild(li);
+            });
+            
+            // Update recommendations
+            const recommendationList = document.getElementById('recommendationList');
+            recommendationList.innerHTML = '';
+            
+            const recommendations = getRecommendations(stressLevel, assessment.feature_contributions || {});
+            recommendations.forEach(rec => {
+                const li = document.createElement('li');
+                li.className = 'recommendation-item';
+                li.innerHTML = `
+                    <div class="recommendation-icon">${rec.icon}</div>
+                    <div class="recommendation-content">
+                        <h4>${rec.title}</h4>
+                        <p>${rec.description}</p>
+                    </div>
+                `;
+                recommendationList.appendChild(li);
+            });
+        }
+
+        function formatFactorName(name) {
+            const names = {
+                'sleep_hours': 'Sleep Hours',
+                'assignment_pressure': 'Assignment Pressure',
+                'exam_fear': 'Exam Fear',
+                'social_support': 'Social Support',
+                'study_hours': 'Study Hours',
+                'attendance': 'Class Attendance',
+                'screen_time': 'Screen Time',
+                'financial_pressure': 'Financial Pressure',
+                'physical_activity': 'Physical Activity'
+            };
+            return names[name] || name;
+        }
+
+        function getRecommendations(stressLevel, factors) {
+            const recommendations = [];
+            
+            // Sleep recommendations
+            if (factors.sleep_hours > 15) {
+                recommendations.push({
+                    icon: '😴',
+                    title: 'Improve Sleep Schedule',
+                    description: 'Aim for 7-9 hours of quality sleep. Good sleep is crucial for stress management and academic performance.'
+                });
+            }
+            
+            // Study recommendations
+            if (factors.assignment_pressure > 12 || factors.study_hours > 10) {
+                recommendations.push({
+                    icon: '📚',
+                    title: 'Study Effectively',
+                    description: 'Use focused study sessions with regular breaks. Consider the Pomodoro technique to maintain productivity without burnout.'
+                });
+            }
+            
+            // Physical activity recommendations
+            if (factors.physical_activity > 8) {
+                recommendations.push({
+                    icon: '🏃',
+                    title: 'Stay Active',
+                    description: 'Regular physical activity helps reduce stress and improve overall wellbeing. Aim for at least 30 minutes of moderate exercise daily.'
+                });
+            }
+            
+            // Social support recommendations
+            if (factors.social_support > 10) {
+                recommendations.push({
+                    icon: '👥',
+                    title: 'Build Support Network',
+                    description: 'Connect with friends, family, or campus support services. Strong social support is essential for managing stress.'
+                });
+            }
+            
+            // Screen time recommendations
+            if (factors.screen_time > 10) {
+                recommendations.push({
+                    icon: '📱',
+                    title: 'Reduce Screen Time',
+                    description: 'Limit excessive screen time, especially before bed. Take regular breaks from digital devices to reduce eye strain and mental fatigue.'
+                });
+            }
+            
+            // Default recommendations if none specific
+            if (recommendations.length === 0) {
+                recommendations.push(
+                    {
+                        icon: '🧘',
+                        title: 'Practice Mindfulness',
+                        description: 'Incorporate mindfulness or meditation into your daily routine to help manage stress and improve focus.'
+                    },
+                    {
+                        icon: '🎯',
+                        title: 'Set Realistic Goals',
+                        description: 'Break large tasks into smaller, manageable goals. Celebrate small achievements to maintain motivation.'
+                    }
+                );
+            }
+            
+            return recommendations;
+        }
+
+        function downloadReport() {
+            const assessments = JSON.parse(localStorage.getItem('campuswell-assessments') || '[]');
+            
+            if (assessments.length === 0) {
+                alert('No assessment data to download');
+                return;
+            }
+            
+            const latestAssessment = assessments[0];
+            const date = new Date(latestAssessment.date);
+            
+            const reportText = `
+CAMPUSWELL ANALYTICS - STRESS REPORT
+Generated: ${date.toLocaleString()}
+
+==============================================
+STRESS LEVEL: ${latestAssessment.prediction.toUpperCase()}
+RISK SCORE: ${Math.round(latestAssessment.risk_score)}/100
+CONFIDENCE: ${latestAssessment.confidence.toFixed(1)}%
+
+==============================================
+TOP FACTORS:
+${Object.entries(latestAssessment.feature_contributions || {})
+    .sort(([,a], [,b]) => b - a)
+    .slice(0, 5)
+    .map(([factor, impact], index) => 
+        `${index + 1}. ${formatFactorName(factor)}: ${impact.toFixed(1)}%`
+    ).join('\n')}
+
+==============================================
+RECOMMENDATIONS:
+${getRecommendations(latestAssessment.prediction, latestAssessment.feature_contributions || {})
+    .map((rec, index) => `${index + 1}. ${rec.title}\n   ${rec.description}`)
+    .join('\n\n')}
+
+==============================================
+This report provides insights for educational purposes only.
+For professional medical advice, please consult a healthcare provider.
+
+CampusWell Analytics - Student Wellness Platform
+            `;
+            
+            const blob = new Blob([reportText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `stress-report-${date.toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTheme();
+            loadUserData();
+            loadReportData();
+        });
+    </script>
+</body>
+</html>

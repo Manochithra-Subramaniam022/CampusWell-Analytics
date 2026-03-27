@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment - CampusWell Analytics</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --background: #ffffff;
+            --surface: #f8fafc;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --radius: 12px;
+        }
+
+        [data-theme="dark"] {
+            --background: #0f172a;
+            --surface: #1e293b;
+            --text: #f8fafc;
+            --text-light: #cbd5e1;
+            --border: #334155;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .logo {
+            width: 32px;
+            height: 32px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .theme-toggle, .logout-btn, .home-btn {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: var(--text);
+        }
+
+        .theme-toggle:hover, .logout-btn:hover, .home-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Assessment Section */
+        .assessment-section {
+            padding: 2rem 0;
+        }
+
+        .assessment-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .assessment-header h1 {
+            font-size: 2rem;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .assessment-header p {
+            color: var(--text-light);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .step {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--surface);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+
+        .step.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .step.completed {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        /* Form Section */
+        .form-section {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 0 auto 2rem;
+            border: 1px solid var(--border);
+            max-width: 800px;
+        }
+
+        .form-step {
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-step h3 {
+            font-size: 1.5rem;
+            color: var(--text);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--background);
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .range-control {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .range-control input[type="range"] {
+            flex: 1;
+        }
+
+        .range-value {
+            min-width: 40px;
+            text-align: center;
+            font-weight: 500;
+            color: var(--primary);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .radio-group input[type="radio"] {
+            margin: 0;
+        }
+
+        /* Actions */
+        .actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 12px 32px;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--shadow);
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Loading */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            .nav-actions {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="brand">
+                <div class="logo">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2L2 7v10c0 5.52 4.48 10 10s10-4.48 10-10S17.52 2 12 2zm0 18c-2.76 0-5-2.24-5-5s2.24-5 5-5 5-5 5-5-2.24-5-5-5-2.24-5-5-5-2.24-5-5-5-2.24-5-5z"/>
+                    </svg>
+                </div>
+                <span>CampusWell Analytics</span>
+            </div>
+            <div class="nav-actions">
+                <div class="user-info" id="userInfo">
+                    <span id="userEmail">Loading...</span>
+                </div>
+                <a href="home.html" class="home-btn">🏠</a>
+                <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+                <button class="logout-btn" onclick="logout()">🚪</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Assessment Section -->
+    <section class="assessment-section">
+        <div class="container">
+            <div class="assessment-header">
+                <h1>Student Stress Assessment</h1>
+                <p>Please complete this comprehensive assessment to get personalized insights about your stress levels and wellbeing.</p>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 25%"></div>
+                </div>
+                <div class="progress-steps">
+                    <div class="step active" id="step1">1</div>
+                    <div class="step" id="step2">2</div>
+                    <div class="step" id="step3">3</div>
+                    <div class="step" id="step4">4</div>
+                </div>
+            </div>
+
+            <!-- Form Section -->
+            <div class="form-section">
+                <form id="assessmentForm" onsubmit="analyzeStress(event)">
+                    <!-- Step 1: Personal Information -->
+                    <div class="form-step" id="step1Content">
+                        <h3>Personal Information</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="age">Age</label>
+                                <input type="number" id="age" name="age" min="16" max="30" required class="form-control">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="gender">Gender</label>
+                                <select id="gender" name="gender" required class="form-control">
+                                    <option value="">Select</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="studyYear">Year of Study</label>
+                                <select id="studyYear" name="study_year" required class="form-control">
+                                    <option value="">Select</option>
+                                    <option value="1">First Year</option>
+                                    <option value="2">Second Year</option>
+                                    <option value="3">Third Year</option>
+                                    <option value="4">Fourth Year</option>
+                                    <option value="5">Graduate</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="major">Field of Study</label>
+                                <select id="major" name="major" required class="form-control">
+                                    <option value="">Select</option>
+                                    <option value="engineering">Engineering</option>
+                                    <option value="medicine">Medicine</option>
+                                    <option value="business">Business</option>
+                                    <option value="arts">Arts</option>
+                                    <option value="science">Science</option>
+                                    <option value="technology">Technology</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Academic Life -->
+                    <div class="form-step hidden" id="step2Content">
+                        <h3>Academic Life</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="studyHours">Study Hours per Day</label>
+                                <div class="range-control">
+                                    <input type="range" id="studyHours" name="study_hours" min="0" max="16" value="6" class="form-control" oninput="updateRangeValue('studyHours', this.value)">
+                                    <span class="range-value" id="studyHoursValue">6</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="attendance">Class Attendance (%)</label>
+                                <div class="range-control">
+                                    <input type="range" id="attendance" name="attendance" min="0" max="100" value="80" class="form-control" oninput="updateRangeValue('attendance', this.value)">
+                                    <span class="range-value" id="attendanceValue">80%</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="gpa">Current GPA</label>
+                                <div class="range-control">
+                                    <input type="range" id="gpa" name="gpa" min="0" max="4" step="0.1" value="3.0" class="form-control" oninput="updateRangeValue('gpa', this.value)">
+                                    <span class="range-value" id="gpaValue">3.0</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="assignmentPressure">Assignment Pressure</label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="assignment_pressure" value="1" required> Very Low</label>
+                                    <label><input type="radio" name="assignment_pressure" value="2"> Low</label>
+                                    <label><input type="radio" name="assignment_pressure" value="3" checked> Moderate</label>
+                                    <label><input type="radio" name="assignment_pressure" value="4"> High</label>
+                                    <label><input type="radio" name="assignment_pressure" value="5"> Very High</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="examFear">Exam Fear Level</label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="exam_fear" value="1" required> Very Low</label>
+                                    <label><input type="radio" name="exam_fear" value="2"> Low</label>
+                                    <label><input type="radio" name="exam_fear" value="3" checked> Moderate</label>
+                                    <label><input type="radio" name="exam_fear" value="4"> High</label>
+                                    <label><input type="radio" name="exam_fear" value="5"> Very High</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Lifestyle & Health -->
+                    <div class="form-step hidden" id="step3Content">
+                        <h3>Lifestyle & Health</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="sleepHours">Sleep Hours per Night</label>
+                                <div class="range-control">
+                                    <input type="range" id="sleepHours" name="sleep_hours" min="0" max="12" value="7" class="form-control" oninput="updateRangeValue('sleepHours', this.value)">
+                                    <span class="range-value" id="sleepHoursValue">7</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="screenTime">Screen Time (hours/day)</label>
+                                <div class="range-control">
+                                    <input type="range" id="screenTime" name="screen_time" min="0" max="16" value="8" class="form-control" oninput="updateRangeValue('screenTime', this.value)">
+                                    <span class="range-value" id="screenTimeValue">8</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="physicalActivity">Physical Activity (hours/week)</label>
+                                <div class="range-control">
+                                    <input type="range" id="physicalActivity" name="physical_activity" min="0" max="20" value="3" class="form-control" oninput="updateRangeValue('physicalActivity', this.value)">
+                                    <span class="range-value" id="physicalActivityValue">3</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="caffeineIntake">Caffeine Intake (cups/day)</label>
+                                <div class="range-control">
+                                    <input type="range" id="caffeineIntake" name="caffeine_intake" min="0" max="10" value="2" class="form-control" oninput="updateRangeValue('caffeineIntake', this.value)">
+                                    <span class="range-value" id="caffeineIntakeValue">2</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="dietQuality">Diet Quality</label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="diet_quality" value="1" required> Poor</label>
+                                    <label><input type="radio" name="diet_quality" value="2"> Fair</label>
+                                    <label><input type="radio" name="diet_quality" value="3" checked> Good</label>
+                                    <label><input type="radio" name="diet_quality" value="4"> Very Good</label>
+                                    <label><input type="radio" name="diet_quality" value="5"> Excellent</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Social & Financial -->
+                    <div class="form-step hidden" id="step4Content">
+                        <h3>Social & Financial Factors</h3>
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="socialSupport">Social Support</label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="social_support" value="1" required> Very Poor</label>
+                                    <label><input type="radio" name="social_support" value="2"> Poor</label>
+                                    <label><input type="radio" name="social_support" value="3" checked> Moderate</label>
+                                    <label><input type="radio" name="social_support" value="4"> Good</label>
+                                    <label><input type="radio" name="social_support" value="5"> Excellent</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="financialPressure">Financial Pressure</label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="financial_pressure" value="1" required> Very Low</label>
+                                    <label><input type="radio" name="financial_pressure" value="2"> Low</label>
+                                    <label><input type="radio" name="financial_pressure" value="3" checked> Moderate</label>
+                                    <label><input type="radio" name="financial_pressure" value="4"> High</label>
+                                    <label><input type="radio" name="financial_pressure" value="5"> Very High</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="commuteTime">Daily Commute Time (hours)</label>
+                                <div class="range-control">
+                                    <input type="range" id="commuteTime" name="commute_time" min="0" max="4" step="0.5" value="1" class="form-control" oninput="updateRangeValue('commuteTime', this.value)">
+                                    <span class="range-value" id="commuteTimeValue">1</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="extracurricular">Extracurricular Activities</label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="extracurricular" value="1" required> None</label>
+                                    <label><input type="radio" name="extracurricular" value="2"> 1-2 activities</label>
+                                    <label><input type="radio" name="extracurricular" value="3" checked> 3-4 activities</label>
+                                    <label><input type="radio" name="extracurricular" value="4"> 5+ activities</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="relationshipStatus">Relationship Status</label>
+                                <select id="relationshipStatus" name="relationship_status" required class="form-control">
+                                    <option value="">Select</option>
+                                    <option value="single">Single</option>
+                                    <option value="relationship">In Relationship</option>
+                                    <option value="married">Married</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Navigation Buttons -->
+                    <div class="actions">
+                        <button type="button" class="btn-secondary hidden" id="prevBtn" onclick="previousStep()">Previous</button>
+                        <button type="button" class="btn-primary" id="nextBtn" onclick="nextStep()">Next</button>
+                        <button type="submit" class="btn-primary hidden" id="submitBtn">Complete Assessment</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Loading -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Analyzing your responses...</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('campuswell-theme', newTheme);
+            
+            const themeBtn = document.querySelector('.theme-toggle');
+            themeBtn.textContent = newTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem('campuswell-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.querySelector('.theme-toggle').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
+        }
+
+        function logout() {
+            localStorage.removeItem('campuswell-email');
+            localStorage.removeItem('campuswell-user');
+            window.location.href = 'login.html';
+        }
+
+        function loadUserData() {
+            const userEmail = localStorage.getItem('campuswell-email');
+            const userData = localStorage.getItem('campuswell-user');
+            
+            if (!userEmail && !userData) {
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            if (userEmail) {
+                document.getElementById('userEmail').textContent = userEmail;
+            } else if (userData) {
+                const user = JSON.parse(userData);
+                document.getElementById('userEmail').textContent = user.email;
+            }
+        }
+
+        // Step navigation
+        function nextStep() {
+            if (validateCurrentStep()) {
+                if (currentStep < totalSteps) {
+                    document.getElementById(`step${currentStep}`).classList.add('completed');
+                    document.getElementById(`step${currentStep}`).classList.remove('active');
+                    
+                    currentStep++;
+                    showStep(currentStep);
+                }
+            }
+        }
+
+        function previousStep() {
+            if (currentStep > 1) {
+                document.getElementById(`step${currentStep}`).classList.remove('completed');
+                document.getElementById(`step${currentStep}`).classList.remove('active');
+                
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+
+        function showStep(step) {
+            for (let i = 1; i <= totalSteps; i++) {
+                document.getElementById(`step${i}Content`).classList.add('hidden');
+            }
+            
+            document.getElementById(`step${step}Content`).classList.remove('hidden');
+            
+            const progress = (step / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            
+            for (let i = 1; i <= totalSteps; i++) {
+                const stepElement = document.getElementById(`step${i}`);
+                stepElement.classList.remove('active', 'completed');
+                if (i < step) {
+                    stepElement.classList.add('completed');
+                } else if (i === step) {
+                    stepElement.classList.add('active');
+                }
+            }
+            
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (step === 1) {
+                prevBtn.classList.add('hidden');
+            } else {
+                prevBtn.classList.remove('hidden');
+            }
+            
+            if (step === totalSteps) {
+                nextBtn.classList.add('hidden');
+                submitBtn.classList.remove('hidden');
+            } else {
+                nextBtn.classList.remove('hidden');
+                submitBtn.classList.add('hidden');
+            }
+        }
+
+        function validateCurrentStep() {
+            const currentStepElement = document.getElementById(`step${currentStep}Content`);
+            const requiredFields = currentStepElement.querySelectorAll('[required]');
+            
+            for (let field of requiredFields) {
+                if (!field.value || field.value === '') {
+                    field.focus();
+                    alert('Please fill in all required fields');
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+
+        function updateRangeValue(field, value) {
+            document.getElementById(field + 'Value').textContent = value;
+        }
+
+        // Analyze stress
+        async function analyzeStress(event) {
+            event.preventDefault();
+            
+            document.getElementById('loading').classList.add('active');
+            
+            try {
+                const formData = new FormData(event.target);
+                const data = {};
+                for (let [key, value] of formData.entries()) {
+                    data[key] = parseFloat(value) || value;
+                }
+
+                // Enhanced calculation
+                const sleepHours = parseFloat(data.sleep_hours) || 7;
+                const assignmentPressure = parseFloat(data.assignment_pressure) || 3;
+                const examFear = parseFloat(data.exam_fear) || 3;
+                const socialSupport = parseFloat(data.social_support) || 3;
+                const studyHours = parseFloat(data.study_hours) || 6;
+                const attendance = parseFloat(data.attendance) || 80;
+                const gpa = parseFloat(data.gpa) || 3.0;
+                const screenTime = parseFloat(data.screen_time) || 8;
+                const physicalActivity = parseFloat(data.physical_activity) || 3;
+                const caffeineIntake = parseFloat(data.caffeine_intake) || 2;
+                const dietQuality = parseFloat(data.diet_quality) || 3;
+                const financialPressure = parseFloat(data.financial_pressure) || 3;
+                const commuteTime = parseFloat(data.commute_time) || 1;
+                const extracurricular = parseFloat(data.extracurricular) || 3;
+                const relationshipStatus = data.relationship_status || 'single';
+                
+                let stressScore = 0;
+                
+                if (sleepHours < 6) stressScore += 30;
+                else if (sleepHours < 7) stressScore += 20;
+                else if (sleepHours < 8) stressScore += 10;
+                
+                if (assignmentPressure > 4) stressScore += 20;
+                else if (assignmentPressure > 3) stressScore += 15;
+                else if (assignmentPressure > 2) stressScore += 10;
+                
+                if (examFear > 4) stressScore += 15;
+                else if (examFear > 3) stressScore += 10;
+                
+                if (attendance < 70) stressScore += 10;
+                if (gpa < 2.5) stressScore += 10;
+                if (studyHours > 12) stressScore += 10;
+                
+                if (screenTime > 10) stressScore += 15;
+                else if (screenTime > 8) stressScore += 10;
+                
+                if (physicalActivity < 2) stressScore += 10;
+                if (caffeineIntake > 4) stressScore += 8;
+                if (dietQuality < 3) stressScore += 8;
+                
+                if (socialSupport < 3) stressScore += 12;
+                if (financialPressure > 4) stressScore += 15;
+                if (commuteTime > 2) stressScore += 5;
+                if (relationshipStatus === 'single') stressScore += 5;
+                
+                stressScore += Math.random() * 8;
+                stressScore = Math.min(stressScore, 100);
+                
+                let stressLevel, confidence;
+                if (stressScore <= 30) {
+                    stressLevel = 'low';
+                    confidence = 90;
+                } else if (stressScore <= 60) {
+                    stressLevel = 'medium';
+                    confidence = 85;
+                } else {
+                    stressLevel = 'high';
+                    confidence = 88;
+                }
+                
+                const results = {
+                    prediction: stressLevel,
+                    confidence: confidence,
+                    risk_score: stressScore,
+                    feature_contributions: {
+                        'sleep_hours': sleepHours < 6 ? 25 : sleepHours < 7 ? 15 : 8,
+                        'assignment_pressure': assignmentPressure * 4,
+                        'exam_fear': examFear * 3,
+                        'social_support': (6 - socialSupport) * 5,
+                        'study_hours': studyHours > 10 ? 15 : 5,
+                        'attendance': attendance < 80 ? 10 : 3,
+                        'screen_time': screenTime > 8 ? 12 : 4,
+                        'financial_pressure': financialPressure * 3,
+                        'physical_activity': physicalActivity < 3 ? 8 : 3
+                    },
+                    date: new Date().toISOString(),
+                    responses: data
+                };
+                
+                // Save assessment
+                const assessments = JSON.parse(localStorage.getItem('campuswell-assessments') || '[]');
+                assessments.unshift(results);
+                localStorage.setItem('campuswell-assessments', JSON.stringify(assessments));
+                
+                // Redirect to report
+                setTimeout(() => {
+                    window.location.href = 'report.html';
+                }, 2000);
+                
+            } catch (error) {
+                alert('Analysis error: ' + error.message);
+                document.getElementById('loading').classList.remove('active');
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadTheme();
+            loadUserData();
+            showStep(1);
+        });
+    </script>
+</body>
+</html>
