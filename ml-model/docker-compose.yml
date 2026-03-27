@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  campuswell-ml:
+    build: .
+    container_name: campuswell-ml-api
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./ml-model:/app/ml-model
+      - ./data:/app/data
+      - ./logs:/app/logs
+    environment:
+      - FLASK_ENV=production
+      - PYTHONPATH=/app
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  redis:
+    image: redis:7-alpine
+    container_name: campuswell-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:14-alpine
+    container_name: campuswell-db
+    environment:
+      POSTGRES_DB: campuswell
+      POSTGRES_USER: campuswell_user
+      POSTGRES_PASSWORD: campuswell_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  redis_data:
+  postgres_data:

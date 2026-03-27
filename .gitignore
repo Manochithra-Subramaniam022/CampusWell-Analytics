@@ -1,0 +1,43 @@
+# CampusWell Analytics - Git Ignore
+
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+
+# Environment variables
+.env
+.venv/
+env/
+venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# ML Models (if too large)
+*.pkl
+*.h5
+
+# Data files (if sensitive)
+data/student_data_*.csv
+data/sensitive_*
+
+# Build outputs
+dist/
+build/
+
+# Temporary files
+tmp/
+temp/
