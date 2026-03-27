@@ -397,6 +397,61 @@
             color: var(--text);
         }
 
+        /* Tips Section */
+        .tips-section {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        .tips-section h3 {
+            margin-bottom: 1.5rem;
+            color: var(--text);
+        }
+
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tip-card {
+            background: var(--background);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .tip-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px var(--shadow);
+        }
+
+        .tip-card h4 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .tip-card p {
+            color: var(--text-light);
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+
+        .tip-card .tip-time {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .container {
@@ -502,6 +557,14 @@
                     <ul class="recommendation-list" id="recommendationList">
                         <!-- Dynamic content -->
                     </ul>
+                    
+                    <!-- Counseling-Style Tips Section -->
+                    <div class="tips-section" style="margin-top: 2rem;">
+                        <h3 style="margin-bottom: 1.5rem; color: var(--text);">🧘 Counseling-Style Tips</h3>
+                        <div class="tips-grid" id="tipsGrid">
+                            <!-- Dynamic tips content -->
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Actions -->
@@ -638,6 +701,22 @@
                 `;
                 recommendationList.appendChild(li);
             });
+            
+            // Update counseling tips
+            const tipsGrid = document.getElementById('tipsGrid');
+            tipsGrid.innerHTML = '';
+            
+            const counselingTips = generateCounselingTips(assessment);
+            counselingTips.forEach(tip => {
+                const tipCard = document.createElement('div');
+                tipCard.className = 'tip-card';
+                tipCard.innerHTML = `
+                    <h4>${tip.icon} ${tip.title}</h4>
+                    <div class="tip-time">${tip.time}</div>
+                    <p>${tip.description}</p>
+                `;
+                tipsGrid.appendChild(tipCard);
+            });
         }
 
         function formatFactorName(name) {
@@ -720,6 +799,96 @@
             }
             
             return recommendations;
+        }
+
+        function generateCounselingTips(assessment) {
+            const tips = [];
+            const factors = assessment.feature_contributions || {};
+            const responses = assessment.responses || {};
+            
+            // Sleep-related tips
+            if (responses.sleep_hours && parseFloat(responses.sleep_hours) < 6) {
+                tips.push({
+                    icon: '🌙',
+                    title: 'Schedule Wind-Down Time',
+                    time: '30 minutes before bed',
+                    description: 'Create a relaxing bedtime routine. Turn off screens, dim lights, and practice deep breathing or gentle stretching to signal your body it\'s time to sleep.'
+                });
+            }
+            
+            // Screen time tips
+            if (responses.screen_time && parseFloat(responses.screen_time) > 8) {
+                tips.push({
+                    icon: '⏰',
+                    title: 'Take Regular Screen Breaks',
+                    time: 'Every hour',
+                    description: 'Follow the 20-20-20 rule: every 20 minutes of screen time, look at something 20 feet away for 20 seconds. This reduces eye strain and mental fatigue.'
+                });
+            }
+            
+            // Study pressure tips
+            if (responses.assignment_pressure && parseFloat(responses.assignment_pressure) > 3) {
+                tips.push({
+                    icon: '📝',
+                    title: 'Break Down Large Tasks',
+                    time: 'Daily planning',
+                    description: 'Divide overwhelming assignments into smaller, manageable chunks. Create a daily schedule with specific, achievable goals to reduce academic pressure.'
+                });
+            }
+            
+            // Social support tips
+            if (responses.social_support && parseFloat(responses.social_support) < 3) {
+                tips.push({
+                    icon: '👥',
+                    title: 'Connect with Support Systems',
+                    time: 'This week',
+                    description: 'Reach out to campus counseling services, join study groups, or connect with peers. Building a support network is crucial for academic success and mental wellbeing.'
+                });
+            }
+            
+            // Physical activity tips
+            if (responses.physical_activity && parseFloat(responses.physical_activity) < 3) {
+                tips.push({
+                    icon: '🚶',
+                    title: 'Start Small with Exercise',
+                    time: '15 minutes daily',
+                    description: 'Begin with just 15 minutes of walking or light exercise daily. Gradually increase as you build the habit. Even small amounts of physical activity can significantly reduce stress levels.'
+                });
+            }
+            
+            // Financial pressure tips
+            if (responses.financial_pressure && parseFloat(responses.financial_pressure) > 3) {
+                tips.push({
+                    icon: '💰',
+                    title: 'Create a Budget Plan',
+                    time: 'This weekend',
+                    description: 'Develop a simple budget to track expenses and identify areas where you can save. Many universities offer free financial counseling services to help students manage money stress.'
+                });
+            }
+            
+            // General wellness tips
+            tips.push(
+                {
+                    icon: '🧘',
+                    title: 'Practice Deep Breathing',
+                    time: 'When stressed',
+                    description: 'Use the 4-7-8 technique: Inhale for 4 seconds, hold for 7, exhale for 8. This activates your body\'s relaxation response and can be done anywhere, anytime.'
+                },
+                {
+                    icon: '🎵',
+                    title: 'Create a Study Playlist',
+                    time: 'Before study sessions',
+                    description: 'Compile calming music or nature sounds to create a focused study environment. Avoid music with lyrics when reading or writing to improve concentration.'
+                },
+                {
+                    icon: '📅',
+                    title: 'Schedule Self-Care Time',
+                    time: 'Weekly',
+                    description: 'Block out time in your calendar specifically for relaxation and activities you enjoy. Treat self-care as importantly as your academic commitments.'
+                }
+            );
+            
+            return tips;
         }
 
         function downloadReport() {
