@@ -4,8 +4,8 @@ services:
     name: campuswell-analytics
     env: docker
     plan: free
-    buildCommand: "npm install"
-    startCommand: "npm start"
+    image:
+      url: docker.io/manochithra022/campuswell-analytics:latest
     healthCheckPath: /
     envVars:
       - key: NODE_ENV
