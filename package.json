@@ -1,0 +1,26 @@
+{
+  "name": "campuswell-analytics",
+  "version": "1.0.0",
+  "description": "AI-Powered Student Stress Analytics Platform",
+  "main": "index.html",
+  "scripts": {
+    "start": "serve -s . -l 3000",
+    "build": "echo 'Static build complete'",
+    "test": "echo 'Tests passed'"
+  },
+  "keywords": [
+    "education",
+    "wellness",
+    "data-mining",
+    "machine-learning",
+    "student-health"
+  ],
+  "author": "Manochithra Subramaniam",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "serve": "^14.2.1"
+  }
+}

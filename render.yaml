@@ -1,0 +1,17 @@
+services:
+  # Production Web Service
+  - type: web
+    name: campuswell-analytics
+    env: docker
+    plan: free
+    buildCommand: "npm install"
+    startCommand: "npm start"
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+
+# Service configuration for Render deployment
+# This file tells Render how to build and run your Docker container
